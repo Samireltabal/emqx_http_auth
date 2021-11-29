@@ -1,0 +1,33 @@
+{
+    "name": "samireltabal/emqx_auth",
+    "description": "Emqx Server Wrapper for connecting users using tokens and Uuid",
+    "type": "library",
+    "require": {
+        "samireltabal/auth-system": "dev-master",
+        "laravel/framework": "^8.65",
+        "php-mqtt/laravel-client": "^1.0"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "SamirEltabal\\EmqxAuth\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Samir M. Eltabal",
+            "email": "samir.m.eltabal@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [
+                "SamirEltabal\\EmqxAuth\\EmqxAuthServiceProvider"
+            ],
+            "aliases": {
+                "EMQX": "SamirEltabal\\EmqxAuth\\EmqxAuthFacade"
+            }
+        }
+    },
+    "minimum-stability": "dev"
+}
