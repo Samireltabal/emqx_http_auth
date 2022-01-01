@@ -17,12 +17,22 @@ class setHeader
     public function handle(Request $request, Closure $next)
     {
         $request->headers->set('accept', 'application/json');
+        // if ($request->has('Auth')) {
+        //     if (\Str::contains($request->input('Auth'), 'Bearer ')) {
+        //         $token = \Str::substr($request->input('Auth'), strpos('Bearer ') + 1);
+        //     }
+        // }
+        // $token = \Str::substr($request->input('Auth'), strpos($request->input('Auth'), 'Bearer ') + 1);
+        $token = $request->input('Auth');
+        if (\Str::contains($token, 'Bearer ')) {
+            $token = \Str::substr($token, strpos($token, ' ') + 1);
+        }
         if( 
             $request->has('Auth') &&
             $request->has('uuid') &&
             $request->has('client_id')
           ){
-            $request->headers->set('Authorization', 'Bearer ' . $request->input('Auth'));
+            $request->headers->set('Authorization', 'Bearer ' . $token);
             return $next($request);
         } else {
             return response()->json([

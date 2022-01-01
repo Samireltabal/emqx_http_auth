@@ -9,6 +9,8 @@ use Illuminate\Notifications\Notification;
 use SamirEltabal\EmqxAuth\Notifications\Mqtt\mqttMessage;
 use SamirEltabal\EmqxAuth\Channels\Emqx;
 use App\Models\User;
+use PhpMqtt\Client\Facades\MQTT;
+
 class WsNotification extends Notification
 {
     use Queueable;
@@ -19,12 +21,12 @@ class WsNotification extends Notification
      * @return void
      */
     protected $user;
-    protected $payload;
-    public function __construct(User $user)
+    protected $message;
+    public function __construct(User $user, $message)
     {
         // User $user, $payload, $type
         $this->user = $user;
-        // $this->type = $type;
+        $this->message = $message;
         // $this->payload = $payload;
     }
 
@@ -37,7 +39,8 @@ class WsNotification extends Notification
     public function via($notifiable)
     {
         return [
-            Emqx::class
+            Emqx::class,
+            'database'
         ];
     }
 
@@ -54,9 +57,10 @@ class WsNotification extends Notification
         $data = array(
             'username' => $user->name,
             'user_avatar' => $user->avatar,
-            'message' =>  $this->payload
+            'message' =>  $this->message
         );
         $data = collect($data);
+        // MQTT::publish("/$notifiable->uuid/notifications", $this->message);
         return (new mqttMessage)
                     ->setContent($data)
                     ->setRecipient($channel);
@@ -74,7 +78,7 @@ class WsNotification extends Notification
         return [
             'username' => $user->name,
             'user_avatar' => $user->avatar,
-            'message' =>  $this->payload
+            'message' =>  $this->message
         ];
     }
 }

@@ -8,8 +8,8 @@ use PhpMqtt\Client\Facades\MQTT;
 class Emqx 
 {
     public function send($notifiable, Notification $notification) {
-        // $message = $notification->toMqtt($notifiable);
-        MQTT::publish('/notifications/maintainence/notify', 'new record');
+        $message = $notification->toMqtt($notifiable);
+        MQTT::publish("/$notifiable->uuid/notifications", $message->getContent());
         // logger($log);
     }
 }
